@@ -153,15 +153,15 @@ class EmployeeProfileEditForm(forms.ModelForm):
         super(EmployeeProfileEditForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs.update(
             {
-                'placeholder': 'Enter First Name',
+                'placeholder': 'Digite seu nome',
             }
         )
         self.fields['last_name'].widget.attrs.update(
             {
-                'placeholder': 'Enter Last Name',
+                'placeholder': 'Digite seu sobrenome',
             }
         )
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "gender"]
+        fields = ["first_name", "last_name", "gender", "telefone", "cep", "rua", "numero", "bairro", "cidade", "estado"]

@@ -13,29 +13,29 @@ class JobForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         forms.ModelForm.__init__(self, *args, **kwargs)
-        self.fields['title'].label = "Job Title :"
-        self.fields['location'].label = "Job Location :"
-        self.fields['salary'].label = "Salary :"
-        self.fields['description'].label = "Job Description :"
-        self.fields['tags'].label = "Tags :"
-        self.fields['last_date'].label = "Submission Deadline :"
-        self.fields['company_name'].label = "Company Name :"
-        self.fields['url'].label = "Website :"
+        self.fields['title'].label = "Título:"
+        self.fields['location'].label = "Localização:"
+        self.fields['salary'].label = "Valor(R$):"
+        self.fields['description'].label = "Descrição:"
+        self.fields['tags'].label = "Tags:"
+        self.fields['last_date'].label = "Prazo para entrega :"
+        self.fields['company_name'].label = "Nome da empresa:"
+        self.fields['url'].label = "Site:"
 
 
         self.fields['title'].widget.attrs.update(
             {
-                'placeholder': 'eg : Software Developer',
+                'placeholder': 'Descreva o titulo do Job',
             }
         )        
         self.fields['location'].widget.attrs.update(
             {
-                'placeholder': 'eg : Bangladesh',
+                'placeholder': 'Ex: Local, Rua, Bairro, Cidade, Estado',
             }
         )
         self.fields['salary'].widget.attrs.update(
             {
-                'placeholder': '$800 - $1200',
+                'placeholder': 'Ex: R$800 - R$1200',
             }
         )
         self.fields['tags'].widget.attrs.update(

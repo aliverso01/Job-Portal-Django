@@ -258,14 +258,29 @@
           <div class="job-listing-meta">
             <span class="badge badge-danger">
               {% if job.job_type == '1' %}
-              Tempo Integral
-              {% elif job.job_type == '2'%}
-              Meio Período
-              {% else  %}
-              Estágio
+              Edição de vídeo
+              {% elif job.job_type == '2' %}
+              Captação de imagem
+              {% elif job.job_type == '3' %}
+              Design Gráfico
+              {% elif job.job_type == '4' %}
+              Web Design
+              {% elif job.job_type == '5' %}
+              Animação 2d/3d
+              {% elif job.job_type == '6' %}
+              Motion Designer
+              {% elif job.job_type == '7' %}
+              Produtor
+              {% elif job.job_type == '8' %}
+              Roteirista
+              {% elif job.job_type == '9' %}
+              Social Média
+              {% else %}
+              <!-- Aqui pode adicionar uma opção padrão se necessário -->
               {% endif %}
             </span>
           </div>
+          
         </div>
       </li>
       {% endfor %}

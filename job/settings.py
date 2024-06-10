@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'taggit',
     'user_visit',
     'debug_toolbar',
+    'crispy_forms',
+    
 ]
 
 MIDDLEWARE = [
@@ -196,4 +198,9 @@ MESSAGE_TAGS = {
 django_heroku.settings(locals())
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
