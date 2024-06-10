@@ -2,16 +2,16 @@
 {% load static %}
 {% block content %}
 
-<!-- HOME -->
+<!-- INÍCIO -->
 <section class="section-hero overlay inner-page bg-image"
-  style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+  style="background-image: url('{% static 'images/headbg.png' %}');" id="home-section">
   <div class="container">
     <div class="row">
       <div class="col-md-7">
-        <h1 class="text-white font-weight-bold">Log In</h1>
+        <h1 class="text-white font-weight-bold">Entrar</h1>
         <div class="custom-breadcrumbs">
-          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
-          <span class="text-white"><strong>Log In</strong></span>
+          <a href="{% url 'jobapp:home' %}">Início</a> <span class="mx-2 slash">/</span>
+          <span class="text-white"><strong>Entrar</strong></span>
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@
           {% endfor %}
           <div class="row form-group">
             <div class="col-md-12">
-              <input type="submit" value="Sign In" class="btn px-4 btn-primary text-white">
+              <input type="submit" value="Entrar" class="btn px-4 btn-primary text-white" style="background-color: rgb(93, 93, 248); border: none;">
             </div>
           </div>
         </form>

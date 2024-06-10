@@ -1,14 +1,14 @@
 {% if page_obj.has_other_pages %}
 <div class="row pagination-wrap">
   <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
-    <span id="page_navigator">Showing {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} Pages</span>
+    <span id="page_navigator">Mostrando {{ page_obj.number }} de {{ page_obj.paginator.num_pages }} Páginas</span>
   </div>
   <div class="col-md-6 text-center text-md-right">
     <div class="custom-pagination ml-auto">
       
       <span id="prev_page">
       {% if page_obj.has_previous %}
-      <a id="ajax_paginator" href="?page={{ page_obj.previous_page_number }}" class="prev">Prev</a>
+      <a id="ajax_paginator" href="?page={{ page_obj.previous_page_number }}" class="prev">Anterior</a>
       {% endif %}
     </span>
       <span id="page_no">
@@ -25,7 +25,7 @@
       </span>
       {% if page_obj.has_next %}
       <span id="next_page">
-        <a id="ajax_paginator" class="next" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a id="ajax_paginator" class="next" href="?page={{ page_obj.next_page_number }}">Próxima</a>
       </span>
       {% endif %}
     

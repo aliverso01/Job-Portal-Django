@@ -3,16 +3,16 @@
 
 {% block content %}
 
-<!-- HOME -->
+<!-- INÍCIO -->
 <section class="home-section section-hero overlay bg-image"
-  style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+  style="background-image: url('{% static 'images/headbg.png' %}');" id="home-section">
 
   <div class="container">
     <div class="row align-items-center justify-content-center">
       <div class="col-md-12">
         <div class="mb-5 text-center">
-          <h1 class="text-white font-weight-bold">The Easiest Way To Get Your Dream Job</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate est, consequuntur perferendis.</p>
+          <h1 class="text-white font-weight-bold">Comunicação a distância de um clique</h1>
+          <p>basta apenas colocar o que tá procurando, onde é o trabalho e qual tipo de trabalho.</p>
         </div>
         <form method="GET" action="{% url 'jobapp:search_result' %}" class="search-jobs-form">
           {% include 'jobapp/search.html' %}
@@ -27,11 +27,11 @@
 </section>
 
 <section class="py-5 bg-image overlay-primary fixed overlay" id="next"
-  style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+  style="background-image: url('{% static 'images/headbg.png' %}');">
   <div class="container">
     <div class="row mb-5 justify-content-center">
       <div class="col-md-7 text-center">
-        <h2 class="section-title mb-2 text-white">DJobPortal Stats</h2>
+        <h2 class="section-title mb-2 text-white">Estatísticas do DJobPortal</h2>
         <p class="lead text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita unde officiis
           recusandae sequi excepturi corrupti.</p>
       </div>
@@ -42,28 +42,28 @@
         <div class="d-flex align-items-center justify-content-center mb-2">
           <strong class="number" data-number="{{ total_candidates }}">0</strong>
         </div>
-        <span class="caption">Candidates</span>
+        <span class="caption">Candidatos</span>
       </div>
 
       <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
         <div class="d-flex align-items-center justify-content-center mb-2">
           <strong class="number" data-number="{{ total_jobs }}">0</strong>
         </div>
-        <span class="caption">Jobs Posted</span>
+        <span class="caption">Vagas Publicadas</span>
       </div>
 
       <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
         <div class="d-flex align-items-center justify-content-center mb-2">
           <strong class="number" data-number="{{ total_completed_jobs }}">0</strong>
         </div>
-        <span class="caption">Jobs Filled</span>
+        <span class="caption">Vagas Preenchidas</span>
       </div>
 
       <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
         <div class="d-flex align-items-center justify-content-center mb-2">
           <strong class="number" data-number="{{ total_companies }}">0</strong>
         </div>
-        <span class="caption">Companies</span>
+        <span class="caption">Empresas</span>
       </div>
 
 
@@ -77,7 +77,7 @@
     {% if page_obj %}
     <div class="row mb-5 justify-content-center">
       <div class="col-md-7 text-center">
-        <h2 class="section-title mb-2">{{ total_jobs }} Job Listed</h2>
+        <h2 class="section-title mb-2">{{ total_jobs }} Vagas Listadas</h2>
       </div>
     </div>
 
@@ -102,15 +102,15 @@
           <div class="job-listing-meta">
             {% if job.job_type == '1' %}
             <span class="badge badge-success">
-              Full Time
+              Período Integral
             </span>
             {% elif job.job_type == '2'%}
             <span class="badge badge-danger">
-              Part Time
+              Meio Período
             </span>
             {% else  %}
             <span class="badge badge-info">
-              Internship
+              Estágio
             </span>
             {% endif %}
           </div>
@@ -124,39 +124,37 @@
   {% endif %}
 </section>
 
-<section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('{% static 'images/hero_1.jpg' %}');">
+<section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('{% static 'images/headbg.png' %}');">
   <div class="container">
     {% if request.user.role == "employer" %}
     <div class="row align-items-center">
       <div class="col-md-8">
-        <h2 class="text-white">Want To Hire?</h2>
+        <h2 class="text-white">Quer Contratar?</h2>
         <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
           impedit.</p>
       </div>
       <div class="col-md-3 ml-auto">
-        <a href="{% url 'jobapp:create-job' %}" class="btn btn-warning btn-block btn-lg">Post Your Job</a>
+        <a href="{% url 'jobapp:create-job' %}" class="btn btn-warning btn-block btn-lg">Publicar Vaga</a>
       </div>
     </div>
     {% elif request.user.role == "employee" %}
     <div class="row align-items-center">
       <div class="col-md-8">
-        <h2 class="text-white">Looking For A Job?</h2>
-        <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
-          impedit.</p>
+        <h2 class="text-white">Quer ser nosso parceiro?</h2>
+        <p class="mb-0 text-white lead">Cadastre-se agora mesmo e comece a trabalhar.</p>
       </div>
       <div class="col-md-3 ml-auto">
-        <a href="{% url 'jobapp:job-list' %}" class="btn btn-warning btn-block btn-lg">Job List</a>
+        <a href="{% url 'jobapp:job-list' %}" class="btn btn-warning btn-block btn-lg">Lista de Vagas</a>
       </div>
     </div>
     {% else %}
     <div class="row align-items-center">
       <div class="col-md-8">
-        <h2 class="text-white">Looking For A Job?</h2>
-        <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
-          impedit.</p>
+        <h2 class="text-white">Quer ser nosso parceiro?</h2>
+        <p class="mb-0 text-white lead">Cadastre-se agora mesmo e comece a trabalhar.</p>
       </div>
       <div class="col-md-3 ml-auto">
-        <a href="{% url 'account:employee-registration' %}" class="btn btn-warning btn-block btn-lg">Sign Up</a>
+        <a href="{% url 'account:employee-registration' %}" class="btn btn-warning btn-block btn-lg">Cadastre-se</a>
       </div>
     </div>
     {% endif %}
@@ -207,20 +205,20 @@
 <script>
 
 $("#ajax_listing_paginattion" ).delegate( "a#ajax_paginator", "click", function( event ) {
-		event.preventDefault();
+    event.preventDefault();
     joblist = ``
     next_paging = ``
     prev_paging = ``
     page_navigator = ``
-		var page_ref = $(this).attr('href');
+    var page_ref = $(this).attr('href');
     var page_number = page_ref.slice(6);
     console.log('page_number', page_number);
-		$.ajax({
-					type: "GET",
-					url: "{% url 'jobapp:home' %}", 
-					data : {    
+    $.ajax({
+          type: "GET",
+          url: "{% url 'jobapp:home' %}", 
+          data : {    
           page : page_number, 
-				},
+        },
         success: function (response) {
           $('#job').html('')
                     response.job_lists.map(function (job) {
@@ -246,17 +244,17 @@ $("#ajax_listing_paginattion" ).delegate( "a#ajax_paginator", "click", function(
                                   ${ job.job_type == '1'
                                   ?  
                                   `<span class="badge badge-success">
-                                    Full Time
+                                    Período Integral
                                   </span>`
                                   : 
                                   job.job_type == '2' 
                                   ?  
                                   `<span class="badge badge-danger">
-                                    Part Time
+                                    Meio Período
                                   </span>` 
                                   :
                                   `<span class="badge badge-info">
-                                    Internship
+                                    Estágio
                                   </span>
                                   `
                                   }
@@ -268,7 +266,7 @@ $("#ajax_listing_paginattion" ).delegate( "a#ajax_paginator", "click", function(
 
                         $('#job').html(joblist)
                         response.next_page_number != null ?
-                        next_paging+=`<a id="ajax_paginator" class="next" href="?page=${ response.next_page_number }">Next</a>`
+                        next_paging+=`<a id="ajax_paginator" class="next" href="?page=${ response.next_page_number }">Próximo</a>`
                         : ''
 
                         $('div>#next_page').html(next_paging)
@@ -279,24 +277,22 @@ $("#ajax_listing_paginattion" ).delegate( "a#ajax_paginator", "click", function(
                         // .removeAttr("href");
                         
                         response.current_page_no > 1 ?
-                        prev_paging+=`<a id="ajax_paginator" href="?page=${ response.prev_page_number }" class="prev">Prev</a>`
+                        prev_paging+=`<a id="ajax_paginator" href="?page=${ response.prev_page_number }" class="prev">Anterior</a>`
                         : ''
                         $('div>#prev_page').html(prev_paging)
 
-                        page_navigator+=`Showing ${ response.current_page_no } of ${ response.no_of_page } Pages`
+                        page_navigator+=`Mostrando ${ response.current_page_no } de ${ response.no_of_page } Páginas`
                         $('div>#page_navigator').html(page_navigator)
                       
                     },
                     
-				error: function () {
-					alert('Error Occured');
-				}
-			});
+        error: function () {
+          alert('Ocorreu um Erro');
+        }
+      });
 
-	});  
+  });  
   
   
-	</script>
+  </script>
 {% endblock %}
-
-

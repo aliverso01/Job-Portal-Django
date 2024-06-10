@@ -3,16 +3,16 @@
 {% block content %}
 
 
-<!-- HOME -->
-<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');"
+<!-- INÍCIO -->
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/headbg.png' %}');"
   id="home-section">
   <div class="container">
     <div class="row">
       <div class="col-md-7">
-        <h1 class="text-white font-weight-bold">Jobs</h1>
+        <h1 class="text-white font-weight-bold">Vagas de Emprego</h1>
         <div class="custom-breadcrumbs">
-          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
-          <span class="text-white"><strong>Jobs</strong></span>
+          <a href="{% url 'jobapp:home' %}">Início</a> <span class="mx-2 slash">/</span>
+          <span class="text-white"><strong>Vagas de Emprego</strong></span>
         </div>
       </div>
     </div>
@@ -32,15 +32,15 @@
             <li class="menu-fix mb-2">
               {% if job.job_type == '1' %}
               <span class="badge badge-primary">
-                Full Time
+                Tempo Integral
               </span>
               {% elif job.job_type == '2'%}
               <span class="badge badge-danger">
-                Part Time
+                Meio Período
               </span>
               {% else  %}
               <span class="badge badge-info">
-                Internship
+                Estágio
               </span>
               {% endif %}</li>
             <li class="badge badge-secondary menu-fix mb-2"> {{ job.location }}</li>

@@ -2,16 +2,16 @@
 {% load static %}
 {% block content %}
 
-<!-- HOME -->
+<!-- INÍCIO -->
 <section class="section-hero overlay inner-page bg-image"
-  style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+  style="background-image: url('{% static 'images/headbg.png' %}');" id="home-section">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <h1 class="text-white font-weight-bold">Employer/Sign Up</h1>
+        <h1 class="text-white font-weight-bold">Empregador/Cadastro</h1>
         <div class="custom-breadcrumbs">
-          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
-          <span class="text-white"><strong>Sign Up</strong></span>
+          <a href="{% url 'jobapp:home' %}">Início</a> <span class="mx-2 slash">/</span>
+          <span class="text-white"><strong>Cadastro</strong></span>
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12 mb-5">
-        <h2 class="mb-4 text-center">Sign Up To JobBoard</h2>
+        <h2 class="mb-4 text-center">Cadastre-se no JobBoard</h2>
         {% include 'messages.html' %}
 
         {% if form.errors %}
@@ -57,7 +57,7 @@
           {% endfor %}
           <div class="row form-group">
             <div class="col-md-12">
-              <input type="submit" value="Sign Up" class="btn px-4 btn-primary text-white">
+              <input type="submit" value="Cadastrar" class="btn px-4 btn-primary text-white" style="background-color: rgb(93, 93, 248); border: none;">
             </div>
           </div>
 
