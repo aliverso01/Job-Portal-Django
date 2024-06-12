@@ -27,12 +27,12 @@ class User(AbstractUser):
     telefone = models.CharField(max_length=20, blank=True)
     # Address fields
     
-    cep = models.CharField(max_length=10, blank=True, null=True)
-    rua = models.CharField(max_length=100, blank=True, null=True)    
-    numero = models.CharField(max_length=10, blank=True, null=True)
-    bairro = models.CharField(max_length=100, blank=True, null=True)
-    cidade = models.CharField(max_length=100, blank=True, null=True)
-    estado = models.CharField(max_length=100, blank=True, null=True)
+    cep = models.CharField(max_length=10, blank=True, null=True, default="")
+    rua = models.CharField(max_length=100, blank=True, null=True, default="")    
+    numero = models.CharField(max_length=10, blank=True, null=True, default="")
+    bairro = models.CharField(max_length=100, blank=True, null=True, default="")
+    cidade = models.CharField(max_length=100, blank=True, null=True, default="")
+    estado = models.CharField(max_length=100, blank=True, null=True, default="")
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 

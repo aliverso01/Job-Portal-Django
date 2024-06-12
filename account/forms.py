@@ -151,17 +151,22 @@ class EmployeeProfileEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EmployeeProfileEditForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs.update(
-            {
-                'placeholder': 'Digite seu nome',
-            }
-        )
-        self.fields['last_name'].widget.attrs.update(
-            {
-                'placeholder': 'Digite seu sobrenome',
-            }
-        )
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Digite seu nome'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Digite seu sobrenome'})
+        self.fields['telefone'].widget.attrs.update({'placeholder': 'Digite seu telefone'})
+        self.fields['cep'].widget.attrs.update({'placeholder': 'Digite seu CEP'})
+        self.fields['rua'].widget.attrs.update({'placeholder': 'Digite sua rua'})
+        self.fields['numero'].widget.attrs.update({'placeholder': 'Digite seu número'})
+        self.fields['bairro'].widget.attrs.update({'placeholder': 'Digite seu bairro'})
+        self.fields['cidade'].widget.attrs.update({'placeholder': 'Digite sua cidade'})
+        self.fields['estado'].widget.attrs.update({'placeholder': 'Digite seu estado'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'Digite seu email', 'disabled': 'disabled'})
+
+        self.fields['first_name'].label = "Nome"
+        self.fields['last_name'].label = "Sobrenome"
+        self.fields['gender'].label = "Sexo"
+
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "gender", "telefone", "cep", "rua", "numero", "bairro", "cidade", "estado"]
+        fields = ["first_name", "last_name", "email", "gender", "telefone", "cep", "rua", "numero", "bairro", "cidade", "estado"]

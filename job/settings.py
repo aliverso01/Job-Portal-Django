@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'user_visit',
     'debug_toolbar',
     'crispy_forms',
+    'crispy_bootstrap4',
     
 ]
 
@@ -201,6 +202,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
