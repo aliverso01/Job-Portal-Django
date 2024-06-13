@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'jobapp.apps.JobappConfig',
     'account.apps.AccountConfig',
+    'portfolio.apps.PortfolioConfig',
 
     #3rd Party App
     'ckeditor',
