@@ -5,6 +5,7 @@ from account.managers import CustomUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from account.managers import CustomUserManager
+from ckeditor.fields import RichTextField
 
 JOB_TYPE = (
     ('M', "Male"),
@@ -33,6 +34,25 @@ class User(AbstractUser):
     bairro = models.CharField(max_length=100, blank=True, null=True, default="")
     cidade = models.CharField(max_length=100, blank=True, null=True, default="")
     estado = models.CharField(max_length=100, blank=True, null=True, default="")
+
+    #informacoes adicionais
+    logo_empresa = models.ImageField(upload_to='logos/', blank=True, null=True, default="")
+    biografia = RichTextField(blank=True, null=True, default="")
+    profissao = models.CharField(max_length=255, blank=True, null=True, default="")
+    especialidade = models.CharField(max_length=255, blank=True, null=True, default="")
+    ferramentas = models.CharField(max_length=255, blank=True, null=True, default="")
+    idiomas = models.CharField(max_length=255, blank=True, null=True, default="")
+    arquivo = models.FileField(upload_to='arquivos/', blank=True, null=True, default="")
+    link_video = models.CharField(max_length=255, blank=True, null=True, default="")
+
+    #redes sociais
+
+    facebook = models.CharField(max_length=255, null=True, blank=True, default="")
+    instagram = models.CharField(max_length=255, null=True, blank=True, default="")
+    linkedin = models.CharField(max_length=255, null=True, blank=True, default="")
+    twitter = models.CharField(max_length=255, null=True, blank=True, default="")
+    youtube = models.CharField(max_length=255, null=True, blank=True, default="")
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 

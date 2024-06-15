@@ -36,7 +36,6 @@
                                 <th>Data de Publicação</th>
                                 <th>Data de Expiração</th>
                                 <th>Status</th>
-                                <th>Candidatos</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -47,43 +46,23 @@
                                 <td>{{ job.timestamp | date:'d/m/Y'  }}</td>
                                 <td>{{ job.last_date | date:'d/m/Y' }}</td>
                                 <td>
-                                    {% if job.is_published == True %}
-                                
-                                        <span class="badge badge-info">Publicada</span>
-                                
-                                    {% else %}
-
-                                        <span class="badge badge-danger px-2">Pendente</span>
-
+                                    {% if job.status == '1' %}
+                                        <span class="badge badge-info">Buscando Profissional</span>
+                                    {% elif job.status == '2' %}
+                                        <span class="badge badge-success">Em andamento</span>
+                                    {% elif job.status == '3' %}
+                                        <span class="badge badge-danger">Aprovação do Cliente</span>
+                                    {% elif job.status == '4' %}
+                                        <span class="badge badge-warning">Solicitado Alteração</span>
+                                    {% elif job.status == '5' %}
+                                        <span class="badge badge-primary">Aguardando Pagamento</span>
+                                    {% elif job.status == '6' %}
+                                        <span class="badge badge-secondary">Finalizado</span>
+                                    {% elif job.status == '7' %}
+                                        <span class="badge badge-dark">Cancelado</span>
                                     {% endif %}
                                 
                                 </td>
-
-                                <td>
-
-                                    {% get_total_applicant total_applicants job as is_applicant %}
-
-                                    {% if is_applicant %}
-                                    <a href="{% url 'jobapp:applicants' job.id %}">
-                                        <i class="fa fa-users"></i>
-                                        <span class="badge badge-success text-white">
-
-                                       
-                                            {% if is_applicant > 1 %}
-
-
-                                            {% get_total_applicant total_applicants job %} Candidatos
-
-                                            {% else %}
-
-                                            {% get_total_applicant total_applicants job %} Candidato
-
-                                            {% endif %}
-
-                                        </span>
-                                        
-                                    </a>
-                                    {% endif %}
 
                                 </td>
                                 <td>

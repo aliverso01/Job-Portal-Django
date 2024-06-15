@@ -89,7 +89,7 @@ def create_job_View(request):
     form = JobForm(request.POST or None)
 
     user = get_object_or_404(User, id=request.user.id)
-    categories = Category.objects.all()
+    # categories = Category.objects.all()
 
     if request.method == 'POST':
 
@@ -101,14 +101,14 @@ def create_job_View(request):
             # for save tags
             form.save_m2m()
             messages.success(
-                    request, 'You are successfully posted your job! Please wait for review.')
+                request, 'Você publicou seu trabalho com sucesso! Por favor, aguarde a revisão.')
             return redirect(reverse("jobapp:single-job", kwargs={
                                     'id': instance.id
                                     }))
 
     context = {
         'form': form,
-        'categories': categories
+        # 'categories': categories
     }
     return render(request, 'jobapp/post-job.html', context)
 
@@ -198,14 +198,19 @@ def apply_job_view(request, id):
 
     user = get_object_or_404(User, id=request.user.id)
     applicant = Applicant.objects.filter(user=user, job=id)
-
+    job = get_object_or_404(Job, id=id)
+    
     if not applicant:
         if request.method == 'POST':
 
             if form.is_valid():
                 instance = form.save(commit=False)
                 instance.user = user
+                instance.status = '2'
                 instance.save()
+
+                job.status = '2'
+                job.save()
 
                 messages.success(
                     request, 'You have successfully applied for this job!')
@@ -337,6 +342,7 @@ def job_bookmark_view(request, id):
 
     user = get_object_or_404(User, id=request.user.id)
     applicant = BookmarkJob.objects.filter(user=request.user.id, job=id)
+    job = get_object_or_404(Job, id=id)
 
     if not applicant:
         if request.method == 'POST':
@@ -344,7 +350,11 @@ def job_bookmark_view(request, id):
             if form.is_valid():
                 instance = form.save(commit=False)
                 instance.user = user
+                instance.status = '3'
                 instance.save()
+
+                job.status = '3'
+                job.save()
 
                 messages.success(
                     request, 'You have successfully save this job!')
@@ -358,11 +368,27 @@ def job_bookmark_view(request, id):
             }))
 
     else:
-        messages.error(request, 'You already saved this Job!')
+        messages.error(request, 'Você enviou para aprovação!')
 
         return redirect(reverse("jobapp:single-job", kwargs={
             'id': id
         }))
+
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employer
+def aprovar_job_view(request, id):
+    job = get_object_or_404(Job, id=id, user=request.user.id)
+
+    if job:
+        try:
+            job.status = '4'
+            job.save()
+            messages.success(request, 'Aprovado com sucesso!')
+        except:
+            messages.success(request, 'Algo deu errado!')
+
+    return redirect('jobapp:dashboard')
+
 
 
 @login_required(login_url=reverse_lazy('account:login'))
@@ -374,7 +400,7 @@ def job_edit_view(request, id=id):
     """
 
     job = get_object_or_404(Job, id=id, user=request.user.id)
-    categories = Category.objects.all()
+    # categories = Category.objects.all()
     form = JobEditForm(request.POST or None, instance=job)
     if form.is_valid():
         instance = form.save(commit=False)
@@ -388,7 +414,7 @@ def job_edit_view(request, id=id):
     context = {
 
         'form': form,
-        'categories': categories
+        # 'categories': categories
     }
 
     return render(request, 'jobapp/job-edit.html', context)

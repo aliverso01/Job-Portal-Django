@@ -31,7 +31,7 @@
       <div class="col-lg-8 mb-4 mb-lg-0">
         <div class="d-flex align-items-center">
           <div class="border p-2 d-inline-block mr-3 rounded">
-            <img src="{% static 'images/job_logo_2.jpg' %}" alt="Imagem">
+            <img src="{% static 'images/kenai_logo.jpg' %}" width="100px" alt="Imagem">
           </div>
           <div>
             <h2>{{ job.title }}</h2>
@@ -43,7 +43,7 @@
 
                   {% if job.job_type == '1' %}
                   Tempo Integral
-                  {% elif job.job_type == '2'%}
+                  {% elif job.job_type == '2' %}
                   Meio Período
                   {% else  %}
                   Estágio
@@ -60,28 +60,27 @@
             {% if user.is_authenticated and user.role == 'employee' %}
                 {% is_job_already_saved job request.user as is_saved %}
                 {% if is_saved %}
-                <span href="#" class="btn btn-block btn-light btn-md"><span
+                <span class="btn btn-block btn-light btn-md"><span
                     class="icon-heart-o mr-2 text-danger"></span>Salvo</span>
                 {% else %}
 
                 <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
                   {% csrf_token %}
                   <input type="hidden" name="job" value="{{ job.id }}">
-                  <input type="submit" class="btn btn-block btn-light btn-md" value="Salvar Vaga" />
+                  <input type="submit" class="btn btn-block btn-light btn-md" value="Enviar para aprovação" />
                 </form>
                 {% endif %}
             
-            {% elif request.user.id == job.user.id and  user.role == 'employer'  %}
+            {% elif request.user.id == job.user.id and user.role == 'employer' %}
             <button onclick="call_sw_alert_func('{% url 'jobapp:delete' job.id %}','{{ job.id }}','Uma vez excluído, você não poderá recuperar esta postagem!')" class="btn btn-block btn-danger btn-md">Excluir</button>
                                    
             {% comment %} {% else %}
-
             <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
-
-              <input type="submit" class="btn btn-block btn-light btn-md" value="Salvar" />
-            </form> {% endcomment %}
+              <input type="submit" class="btn btn-block btn-light btn-md" value="Enviar para aprovação" />
+            </form> 
+            {% endcomment %}
 
             {% endif %}
 
@@ -92,7 +91,7 @@
             {% is_job_already_applied job request.user as is_applied %}
               {% if is_applied %}
 
-              <span  class="btn btn-block btn-danger btn-md">Já Aplicado</span>
+              <span class="btn btn-block btn-danger btn-md">Em andamento</span>
 
               {% else %}
 
@@ -100,16 +99,21 @@
                 {% csrf_token %}
                 <input type="hidden" name="job" value="{{ job.id }}">
 
-                <input type="submit" class="btn btn-block btn-primary btn-md" value="Aplicar Agora" />
+                <input type="submit" class="btn btn-block btn-primary btn-md" value="Aceitar trabalho" />
               </form>
               {% endif %}
             
           {% elif request.user.id == job.user.id and user.role == 'employer' %}
 
+          {% if job.status == '3' %}
+          <a href=""></a>
+          <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Solicitar correção</a>
+          {% else %}
           <a href="{% url 'jobapp:edit-job' job.id %}" class="btn btn-block btn-light btn-md">Editar</a>
-           {% else %}
+          {% endif %}
+          {% else %}
               <a href="{% url 'jobapp:create-job' %}" class="btn btn-block btn-primary btn-md">Publicar sua Vaga</a>
-            {% endif %}
+          {% endif %}
 
           </div>
         </div>
@@ -137,7 +141,7 @@
             <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
-              <input type="submit" class="btn btn-block btn-light btn-md" value="Salvar" />
+              <input type="submit" class="btn btn-block btn-light btn-md" value="Enviar para Aprovação" />
 
             </form>
 
@@ -146,47 +150,51 @@
             {% elif request.user.id == job.user.id and user.role == 'employer' %}
             <button onclick="call_sw_alert_func('{% url 'jobapp:delete' job.id %}','{{ job.id }}','Uma vez excluído, você não poderá recuperar esta postagem!')" class="btn btn-block btn-danger btn-md">Excluir</button>
                                    
-           {% elif user.role == none %}
+           {% elif user.role is None %}
 
             <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
-
-              <input type="submit" class="btn btn-block btn-light btn-md" value="Salvar" />
+              <input type="submit" class="btn btn-block btn-light btn-md" value="Enviar para Aprovação" />
             </form>
 
             {% endif %}
           </div>
-          {% if user.is_authenticated and  user.role == 'employee' %}
+          {% if user.is_authenticated and user.role == 'employee' %}
           {% is_job_already_applied job request.user as is_applied %}
           {% if is_applied %}
 
           <div class="col-6">
-            <span class="btn btn-block btn-danger btn-md">Já Aplicado</span>
+            <span class="btn btn-block btn-danger btn-md">Em andamento</span>
           </div>
           {% else %}
           <div class="col-6">
             <form action="{% url 'jobapp:apply-job' job.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
-
-              <input type="submit" class="btn btn-block btn-primary btn-md" value="Aplicar Agora" />
+              <input type="submit" class="btn btn-block btn-primary btn-md" value="Aceitar trabalho" />
             </form>
           </div>
           {% endif %}
 
-          {% elif  request.user.id == job.user.id and  user.role == 'employer' %}
+          {% elif request.user.id == job.user.id and user.role == 'employer' %}
           <div class="col-6">
-
+            {% if job.status == '3' %}
+            <a href=""></a>
+            <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Solicitar correção</a>
+            {% elif job.status == '4' %}
+            <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Aguardar correção</a>
+            {% else %}
             <a href="{% url 'jobapp:edit-job' job.id %}" class="btn btn-block btn-light btn-md">Editar</a>
+            {% endif %}
           </div>
-          {% elif user.role == none %}
+          {% elif user.role is None %}
             <div class="col-6">
               <form action="{% url 'jobapp:apply-job' job.id %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="job" value="{{ job.id }}">
 
-                <input type="submit" class="btn btn-block btn-primary btn-md" value="Aplicar Agora" />
+                <input type="submit" class="btn btn-block btn-primary btn-md" value="Aceitar trabalho" />
               </form>
           </div> 
           {% endif %}
@@ -195,16 +203,30 @@
       </div>
       <div class="col-lg-4">
         <div class="bg-light p-3 border rounded mb-4">
-          <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Resumo da Vaga</h3>
+          <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Resumo do Job</h3>
           <ul class="list-unstyled pl-3 mb-0">
             <li class="mb-2"><strong class="text-black">Publicado em:</strong> {{ job.timestamp|date:"d M Y" }}</li>
-            <li class="mb-2"><strong class="text-black">Status de Emprego:</strong>
+            <li class="mb-2"><strong class="text-black">Status do Serviço:</strong>
               {% if job.job_type == '1' %}
-              Tempo Integral
-              {% elif job.job_type == '2'%}
-              Meio Período
-              {% else  %}
-              Estágio
+              Edição de vídeo
+              {% elif job.job_type == '2' %}
+              Captação de imagem
+              {% elif job.job_type == '3' %}
+              Design Gráfico
+              {% elif job.job_type == '4' %}
+              Web Design
+              {% elif job.job_type == '5' %}
+              Animação 2d/3d
+              {% elif job.job_type == '6' %}
+              Motion Designer
+              {% elif job.job_type == '7' %}
+              Produtor
+              {% elif job.job_type == '8' %}
+              Roteirista
+              {% elif job.job_type == '9' %}
+              Social Média
+              {% else %}
+              <!-- Adicione uma opção padrão se necessário -->
               {% endif %}
             </li>
             <li class="mb-2"><strong class="text-black">Localização:</strong> {{ job.location }}</li>
@@ -244,7 +266,7 @@
       <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
         <a href="{% url 'jobapp:single-job' job.id %}"></a>
         <div class="job-listing-logo">
-          <img src="{% static 'images/i.jpg' %}" alt="Imagem" class="img-fluid">
+          <img src="{% static 'images/kenai_logo.jpg' %}" width="100px" alt="Imagem" class="img-fluid">
         </div>
 
         <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">

@@ -13,14 +13,21 @@ class JobForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         forms.ModelForm.__init__(self, *args, **kwargs)
-        self.fields['title'].label = "Título:"
+        self.fields['title'].label = "Assunto:"
         self.fields['location'].label = "Localização:"
+        self.fields['job_type'].label = "Especialidade:"
+        # self.fields['category'].label = "Modalidade:"
         self.fields['salary'].label = "Valor(R$):"
-        self.fields['description'].label = "Descrição:"
-        self.fields['tags'].label = "Tags:"
+        self.fields['description'].label = "Descreva como você imagina o seu material:"
+        self.fields['tags'].label = "Ferramentas:"
         self.fields['last_date'].label = "Prazo para entrega :"
-        self.fields['company_name'].label = "Nome da empresa:"
-        self.fields['url'].label = "Site:"
+        # self.fields['company_name'].label = "Nome da empresa:"
+        # self.fields['url'].label = "Site:"
+
+        #personalizados
+
+        self.fields['proporcional'].label = "Proporção:"
+        self.fields['tempo_video'].label = "Se for vídeo descreva o tempo:"
 
 
         self.fields['title'].widget.attrs.update(
@@ -40,7 +47,7 @@ class JobForm(forms.ModelForm):
         )
         self.fields['tags'].widget.attrs.update(
             {
-                'placeholder': 'Use comma separated. eg: Python, JavaScript ',
+                'placeholder': 'Camera, Drone, Computador, Microfone, etc...',
             }
         )                        
         self.fields['last_date'].widget.attrs.update(
@@ -49,16 +56,16 @@ class JobForm(forms.ModelForm):
                 
             }
         )        
-        self.fields['company_name'].widget.attrs.update(
-            {
-                'placeholder': 'Company Name',
-            }
-        )           
-        self.fields['url'].widget.attrs.update(
-            {
-                'placeholder': 'https://example.com',
-            }
-        )    
+        # self.fields['company_name'].widget.attrs.update(
+        #     {
+        #         'placeholder': 'Company Name',
+        #     }
+        # )           
+        # self.fields['url'].widget.attrs.update(
+        #     {
+        #         'placeholder': 'https://example.com',
+        #     }
+        # )    
 
 
     class Meta:
@@ -68,14 +75,17 @@ class JobForm(forms.ModelForm):
             "title",
             "location",
             "job_type",
-            "category",
+            # "category",
             "salary",
             "description",
             "tags",
             "last_date",
-            "company_name",
-            "company_description",
-            "url"
+            # "company_name",
+            # "company_description",
+            # "url",
+            #personalizados
+            "proporcional",
+            "tempo_video",
             ]
 
     def clean_job_type(self):
@@ -85,12 +95,12 @@ class JobForm(forms.ModelForm):
             raise forms.ValidationError("Service is required")
         return job_type
 
-    def clean_category(self):
-        category = self.cleaned_data.get('category')
+    # def clean_category(self):
+    #     category = self.cleaned_data.get('category')
 
-        if not category:
-            raise forms.ValidationError("category is required")
-        return category
+    #     if not category:
+    #         raise forms.ValidationError("category is required")
+    #     return category
 
 
     def save(self, commit=True):
@@ -126,8 +136,8 @@ class JobEditForm(forms.ModelForm):
         self.fields['description'].label = "Job Description :"
         # self.fields['tags'].label = "Tags :"
         self.fields['last_date'].label = "Dead Line :"
-        self.fields['company_name'].label = "Company Name :"
-        self.fields['url'].label = "Website :"
+        # self.fields['company_name'].label = "Company Name :"
+        # self.fields['url'].label = "Website :"
 
 
         self.fields['title'].widget.attrs.update(
@@ -155,16 +165,16 @@ class JobEditForm(forms.ModelForm):
                 'placeholder': 'YYYY-MM-DD ',
             }
         )        
-        self.fields['company_name'].widget.attrs.update(
-            {
-                'placeholder': 'Company Name',
-            }
-        )           
-        self.fields['url'].widget.attrs.update(
-            {
-                'placeholder': 'https://example.com',
-            }
-        )    
+        # self.fields['company_name'].widget.attrs.update(
+        #     {
+        #         'placeholder': 'Company Name',
+        #     }
+        # )           
+        # self.fields['url'].widget.attrs.update(
+        #     {
+        #         'placeholder': 'https://example.com',
+        #     }
+        # )    
 
     
         last_date = forms.CharField(widget=forms.TextInput(attrs={
@@ -179,13 +189,13 @@ class JobEditForm(forms.ModelForm):
             "title",
             "location",
             "job_type",
-            "category",
+            # "category",
             "salary",
             "description",
             "last_date",
-            "company_name",
-            "company_description",
-            "url"
+            # "company_name",
+            # "company_description",
+            # "url"
             ]
 
     def clean_job_type(self):
@@ -195,12 +205,12 @@ class JobEditForm(forms.ModelForm):
             raise forms.ValidationError("Job Type is required")
         return job_type
 
-    def clean_category(self):
-        category = self.cleaned_data.get('category')
+    # def clean_category(self):
+    #     category = self.cleaned_data.get('category')
 
-        if not category:
-            raise forms.ValidationError("Category is required")
-        return category
+    #     if not category:
+    #         raise forms.ValidationError("Category is required")
+    #     return category
 
 
     def save(self, commit=True):

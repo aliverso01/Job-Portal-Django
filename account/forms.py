@@ -151,6 +151,7 @@ class EmployeeProfileEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EmployeeProfileEditForm, self).__init__(*args, **kwargs)
+        #inputs
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Digite seu nome'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Digite seu sobrenome'})
         self.fields['telefone'].widget.attrs.update({'placeholder': 'Digite seu telefone'})
@@ -162,11 +163,35 @@ class EmployeeProfileEditForm(forms.ModelForm):
         self.fields['estado'].widget.attrs.update({'placeholder': 'Digite seu estado'})
         self.fields['email'].widget.attrs.update({'placeholder': 'Digite seu email', 'disabled': 'disabled'})
 
+        #informações adicionais
+        self.fields['profissao'].widget.attrs.update({'placeholder': 'Digite sua profissão'})
+        self.fields['especialidade'].widget.attrs.update({'placeholder': 'Digite sua especialidade'})
+        self.fields['ferramentas'].widget.attrs.update({'placeholder': 'Digite suas ferramentas'})
+        self.fields['idiomas'].widget.attrs.update({'placeholder': 'Digite seus idiomas'})
+        self.fields['biografia'].widget.attrs.update({'placeholder': 'Digite sua biografia'})
+        self.fields['link_video'].widget.attrs.update({'placeholder': 'Cole ou digite o link do seu portfólio'})
+        self.fields['arquivo'].widget.attrs.update({'placeholder': 'Escolha um arquivo'})
+        self.fields['logo_empresa'].widget.attrs.update({'placeholder': 'Escolha um logo'})
+
+        #redes sociais
+        self.fields['facebook'].widget.attrs.update({'placeholder': 'Digite seu facebook'})
+        self.fields['instagram'].widget.attrs.update({'placeholder': 'Digite seu instagram'})
+        self.fields['linkedin'].widget.attrs.update({'placeholder': 'Digite seu linkedin'})
+        self.fields['twitter'].widget.attrs.update({'placeholder': 'Digite seu twitter'})
+        self.fields['youtube'].widget.attrs.update({'placeholder': 'Digite seu youtube'})
+
+
+        #labels
         self.fields['first_name'].label = "Nome"
         self.fields['last_name'].label = "Sobrenome"
         self.fields['gender'].label = "Sexo"
+        self.fields['logo_empresa'].label = "Sua foto ou logo da empresa"
+        self.fields['link_video'].label = "Link do portfólio"
+        self.fields['arquivo'].label = "ou envie um arquivo"
 
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "email", "gender", "telefone", "cep", "rua", "numero", "bairro", "cidade", "estado"]
+        fields = ["first_name", "last_name", "email", "gender", "telefone", "cep", "rua", "numero", "bairro", "cidade", "estado",
+                  "profissao", "especialidade", "ferramentas", "idiomas", "biografia", "link_video", "arquivo", "logo_empresa",
+                  "facebook", "instagram", "linkedin", "twitter", "youtube"]

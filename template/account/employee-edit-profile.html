@@ -22,8 +22,11 @@
 <section class="container">
   <form method="post" class="my-class">
     {% csrf_token %}
-    <div class="form-group">
+    <div class="form-group mt-4">
       <div class="row">
+        <div class="col-md-12">
+          {{ form.logo_empresa|as_crispy_field }}
+        </div>
         <div class="col-md-6">
           {{ form.first_name|as_crispy_field }}
         </div>
@@ -57,11 +60,54 @@
         <div class="col-md-4">
           {{ form.estado|as_crispy_field }}
         </div>
+        <div class="col-md-12 text-center mt-2">
+          <h1>Informações adicionais</h1>
+        </div>
+        <div class="col-md-6">
+          {{ form.profissao|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.especialidade|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.ferramentas|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.idiomas|as_crispy_field }}
+        </div>
+        <div class="col-md-12">
+          {{ form.biografia|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.link_video|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.arquivo|as_crispy_field }}
+        </div>
+        <div class="col-md-12 text-center">
+          <h1>Redes Sociais</h1>
+        </div>
+        <div class="col-md-6">
+          {{ form.facebook|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.instagram|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.linkedin|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+          {{ form.twitter|as_crispy_field }}
+        </div>
+        <div class="col-md-12 text-center">
+          {{ form.youtube|as_crispy_field }}
+        </div>
+        <div class="col-md-12 text-center">
+          <button type="submit" class="btn btn-primary mb-5">Atualizar</button>
+  
+        </div>
       </div>
-      <div class="col-md-12 text-center">
-        <button type="submit" class="btn btn-primary mb-5">Atualizar</button>
 
-      </div>
     </div>
 </form>
 </section>
