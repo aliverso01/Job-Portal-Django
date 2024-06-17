@@ -82,10 +82,12 @@ class JobForm(forms.ModelForm):
             "last_date",
             # "company_name",
             # "company_description",
-            # "url",
+            "url",
             #personalizados
             "proporcional",
             "tempo_video",
+            "arquivo",
+            "alteracao"
             ]
 
     def clean_job_type(self):
@@ -195,7 +197,8 @@ class JobEditForm(forms.ModelForm):
             "last_date",
             # "company_name",
             # "company_description",
-            # "url"
+            "url",
+            "arquivo"
             ]
 
     def clean_job_type(self):
@@ -219,4 +222,15 @@ class JobEditForm(forms.ModelForm):
         if commit:
             job.save()
         return job
+    
+
+class EnviaMaterialForm(forms.ModelForm):
+    
+    class Meta:
+        model = Aprovacao
+
+        fields = [
+            "arquivo",
+            "link"
+            ]
 

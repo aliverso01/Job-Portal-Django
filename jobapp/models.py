@@ -57,7 +57,7 @@ class Job(models.Model):
     salary = models.CharField(max_length=30, blank=True)
     # company_name = models.CharField(max_length=300)
     # company_description = RichTextField(blank=True, null=True)
-    url = models.URLField(max_length=200)
+    url = models.URLField(max_length=200, null=True, blank=True)
     last_date = models.DateField()
     is_published = models.BooleanField(default=False)
     is_closed = models.BooleanField(default=False)
@@ -68,11 +68,24 @@ class Job(models.Model):
     tempo_video = models.CharField(max_length=30, blank=True)
 
     status = models.CharField(choices=STATUS, max_length=1, default='1')
-
+    arquivo = models.FileField(upload_to='arquivos/', blank=True, null=True)
+    alteracao = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.title
 
+
+class Aprovacao(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(choices=STATUS, max_length=1)
+    timestamp = models.DateTimeField(auto_now=True)
+
+    arquivo = models.FileField(upload_to='arquivos/', blank=True, null=True)
+    link = models.URLField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return self.job.title
  
 
 class Applicant(models.Model):

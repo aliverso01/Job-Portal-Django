@@ -113,28 +113,46 @@ def create_job_View(request):
     return render(request, 'jobapp/post-job.html', context)
 
 
+@login_required(login_url=reverse_lazy('account:login'))
 def single_job_view(request, id):
-    """
-    Provide the ability to view job details
-    """
+    job = get_object_or_404(Job, id=id)
+    
+    # Verifica se existe uma aprovação para o usuário atual e o job específico
+    try:
+        aprovacao = Aprovacao.objects.get(job=job, user=request.user)
+    except Aprovacao.DoesNotExist:
+        aprovacao = None
+
+    form = JobForm(request.POST or None)
+
     if cache.get(id):
         job = cache.get(id)
     else:
         job = get_object_or_404(Job, id=id)
-        cache.set(id,job , 60 * 15)
+        cache.set(id, job, 60 * 15)
+
     related_job_list = job.tags.similar_objects()
 
     paginator = Paginator(related_job_list, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.save()
+        messages.success(request, 'Your Comment Was Successfully Posted!')
+        return HttpResponseRedirect(reverse("jobapp:single-job", kwargs={'id': id}))
+
     context = {
         'job': job,
         'page_obj': page_obj,
-        'total': len(related_job_list)
-
+        'total': len(related_job_list),
+        'form': form,
+        'aprovacao': aprovacao,  # Passando aprovacao para o contexto
     }
+
     return render(request, 'jobapp/job-single.html', context)
+
 
 
 def search_result_view(request):
@@ -379,6 +397,8 @@ def job_bookmark_view(request, id):
 def aprovar_job_view(request, id):
     job = get_object_or_404(Job, id=id, user=request.user.id)
 
+    form = JobEditForm(request.POST or None, instance=job)
+
     if job:
         try:
             job.status = '4'
@@ -387,7 +407,33 @@ def aprovar_job_view(request, id):
         except:
             messages.success(request, 'Algo deu errado!')
 
-    return redirect('jobapp:dashboard')
+    context = {
+        'form': form,
+    }
+
+    return redirect('jobapp:dashboard', context)
+
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employee
+def aprovar_material_view(request, id):
+    job = get_object_or_404(Job, id=id, user=request.user.id)
+
+    form = JobEditForm(request.POST or None, instance=job)
+
+    if job:
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.status = '4'
+            instance.save()
+            messages.success(request, 'Aprovado com sucesso!')
+        else:
+            messages.success(request, 'Algo deu errado!')
+
+    context = {
+        'form': form,
+    }
+
+    return redirect('jobapp:dashboard',)
 
 
 
@@ -418,3 +464,66 @@ def job_edit_view(request, id=id):
     }
 
     return render(request, 'jobapp/job-edit.html', context)
+
+
+
+
+
+#personalizados
+
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employee
+def envia_material_view(request, id):
+    job = get_object_or_404(Job, id=id)
+
+    form = JobEditForm(request.POST or None, instance=job)
+
+    if job:
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.status = '3'
+            instance.save()
+            messages.success(request, 'Material enviado com sucesso!')
+        else:
+            messages.success(request, 'Algo deu errado!')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'jobapp/envia-material.html', context)
+
+
+
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employee
+def envia_material_view(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    aprovacoes = get_object_or_404(Aprovacao, job=job, user=request.user)
+    print(aprovacoes)
+
+
+    if request.method == 'POST':
+        form = EnviaMaterialForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.job = job
+            instance.user = request.user
+            instance.status = '3'
+            instance.save()
+
+            job.status = '3'
+            job.save()
+
+
+            messages.success(request, 'Material enviado com sucesso!')
+            return redirect('jobapp:dashboard')
+    else:
+        form = EnviaMaterialForm()
+
+    context = {
+        'form': form,
+        'job': job,
+        'aprovacoes': aprovacoes,
+    }
+    return render(request, 'jobapp/envia-material.html', context)

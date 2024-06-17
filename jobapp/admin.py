@@ -20,3 +20,6 @@ class BookmarkJobAdmin(admin.ModelAdmin):
 admin.site.register(BookmarkJob,BookmarkJobAdmin)
 
 
+class AprovacaoAdmin(admin.ModelAdmin):
+    list_display = ('job','user','status','timestamp')
+admin.site.register(Aprovacao,AprovacaoAdmin)
