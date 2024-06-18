@@ -1,14 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load is_job_already_applied %}
-{% load is_job_already_saved %}
-{% load crispy_forms_tags %}
 
 {% block content %}
-<!-- INÍCIO -->
-
-<section class="section-hero overlay inner-page bg-image"
-  style="background-image: url('{% static 'images/headbg.png' %}');" id="home-section">
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/headbg.png' %}');" id="home-section">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
@@ -32,7 +26,7 @@
       <div class="col-lg-12 mb-4 mb-lg-0">
         <div class="d-flex align-items-center">
           <div class="border p-2 d-inline-block mr-3 rounded">
-            <img src="{% static 'images/kenai_logo.jpg' %}" width="100px" alt="Imagem">
+            <img src="{% static 'images/kenai_logo.jpg' %}" width="100px" alt="Logo">
           </div>
           <div>
             <h2>{{ job.title }}</h2>
@@ -65,161 +59,155 @@
         </div>
 
         {% if job.status == '3' %}
-        <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-download mr-3"></span>Material enviado</h3>
-        <div class="row mb-5">
-        <div class="col-md-6">
-          <h4>Baixar prévia</h4>
-          <a class="btn btn-block btn-success" href="{{ aprovacao.arquivo.url }}" download>Baixar Arquivo</a>
-        </div>
-        <div class="col-md-6">
-          <h4>Link do arquivo em alta</h4>
-          <a class="btn btn-block btn-primary" href="{{ aprovacao.link }}" target="_blank">Baixar em Alta</a>
-        </div>
-      </div>
+          {% if aprovacao %}
+            {% if aprovacao.arquivo %}
+              <div class="row mb-5">
+                <div class="col-md-6">
+                  <h4>Baixar prévia</h4>
+                  <a class="btn btn-block btn-success" href="{{ aprovacao.arquivo.url }}" download>Baixar Arquivo</a>
+                </div>
+              </div>
+            {% else %}
+              <p>Nenhum arquivo enviado ainda.</p>
+            {% endif %}
+          {% else %}
+            <p>Aprovação não encontrada.</p>
+          {% endif %}
+        {% elif job.status == '6' %}
+          {% if aprovacao %}
+            {% if aprovacao.link %}
+              <div class="row mb-5">
+                <div class="col-md-6">
+                  <h4>Link do arquivo em alta</h4>
+                  <a class="btn btn-block btn-primary" href="{{ aprovacao.link }}" target="_blank">Baixar em Alta</a>
+                </div>
+              </div>
+            {% else %}
+              <p>Nenhum link enviado ainda.</p>
+            {% endif %}
+          {% else %}
+            <p>Aprovação não encontrada.</p>
+          {% endif %}
         {% endif %}
       </div>
     </div>
 
     <div class="row mb-5">
-
       <div class="col-md-6">
-
-        {% if user.is_authenticated and user.role == 'employee' %}
-        {% is_job_already_saved job request.user as is_saved %}
-        {% if is_saved %}
-        <a class="btn btn-block btn-light btn-md" href="{% url 'jobapp:envia-material' job.id %}">Enviar material</a>
-        {% elif job.status == '2' %}
-        <button class="btn btn-block btn-light btn-md" disabled>Em andamento</button>
-        {% elif job.status == '3' %}
-        <button class="btn btn-block btn-light btn-md" disabled>Aguardando aprovação</button>
-        {% elif job.status == '4' %}
-        <button class="btn btn-block btn-light btn-md" disabled>Solicitado Alteração</button>
-        {% elif job.status == '5' %}
-        <button class="btn btn-block btn-light btn-md" disabled>Aguardando Pagamento</button>
-        {% elif job.status == '6' %}
-        <button class="btn btn-block btn-light btn-md" disabled>Finalizado</button>
-        {% elif job.status == '7' %}
-        <button class="btn btn-block btn-light btn-md" disabled>Cancelado</button>
-        {% endif %}
-
-        {% elif request.user.id == job.user.id and user.role == 'employer' %}
-        {% if job.status == '1' %}
-        <button onclick="call_sw_alert_func('{% url 'jobapp:delete' job.id %}','{{ job.id }}','Uma vez cancelada, você não poderá recuperar esta postagem!')" class="btn btn-block btn-danger btn-md">Cancelar</button>
-        {% elif job.status == '3' %}
-        <button class="btn btn-block btn-danger btn-md">Solicitar Alteração</button>
+        {% if user.is_authenticated %}
+          {% if user.role == 'employer' and request.user.id == job.user.id %}
+            {% if job.status == '1' %}
+              <button onclick="call_sw_alert_func('{% url 'jobapp:delete' job.id %}','{{ job.id }}','Uma vez cancelada, você não poderá recuperar esta postagem!')" class="btn btn-block btn-danger btn-md">Cancelar</button>
+            {% elif job.status == '2' %}
+              <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Em produção</a>
+            {% elif job.status == '4' %}
+              <button class="btn btn-block btn-light btn-md" disabled>Aguarde a correção</button>
+              {% elif job.status == '5' %}
+              <button class="btn btn-block btn-light btn-md" >Pagar agora</button>
+              {% elif job.status == '6' %}
+              <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Concluído</a>
+            {% elif job.status == '7' %}
+              <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Cancelado</a>
+            {% else %}
+              <a href="{% url 'jobapp:edit-job' job.id %}" class="btn btn-block btn-light btn-md">Editar</a>
+            {% endif %}
+          {% elif user.role == 'employee' %}
+            {% if job.status == '1' %}
+              <form action="{% url 'jobapp:apply-job' job.id %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="job" value="{{ job.id }}">
+                <input type="submit" class="btn btn-block btn-primary btn-md" value="Aceitar trabalho" />
+              </form>
+            {% elif job.status == '2' %}
+              <form action="{% url 'jobapp:aprov-material' job.id %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-block btn-light btn-md" value="Enviar Material" />
+              </form>
+            {% elif job.status == '3' %}
+              <span class="btn btn-block btn-light btn-md">Aguardando Cliente</span>
+            {% elif job.status == '4' %}
+              <span class="btn btn-block btn-light btn-md">Enviar Alteração</span>
+            {% elif job.status == '5' %}
+              <span class="btn btn-block btn-light btn-md">Aguardando Pagamento</span>
+            {% elif job.status == '6' %}
+              <span class="btn btn-block btn-light btn-md">Concluído</span>
+            {% elif job.status == '7' %}
+              <span class="btn btn-block btn-light btn-md">Cancelado</span>
+            {% endif %}
+          {% endif %}
         {% else %}
-        <button class="btn btn-block btn-danger btn-md" disabled>Cancelar</button>
+          <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="job" value="{{ job.id }}">
+            <input type="submit" class="btn btn-block btn-light btn-md" value="Enviar para Aprovação" />
+          </form>
         {% endif %}
-        {% elif user.role is None %}
-        <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="job" value="{{ job.id }}">
-          <input type="submit" class="btn btn-block btn-light btn-md" value="Enviar para Aprovação" />
-        </form>
-        {% endif %}
-      </div>
-
-      {% if user.is_authenticated and user.role == 'employee' %}
-      {% is_job_already_applied job request.user as is_applied %}
-      {% if is_applied %}
-      <div class="col-6">
-        <span class="btn btn-block btn-danger btn-md">Em andamento</span>
-      </div>
-      {% else %}
-      <div class="col-6">
-        <form action="{% url 'jobapp:apply-job' job.id %}" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="job" value="{{ job.id }}">
-          <input type="submit" class="btn btn-block btn-primary btn-md" value="Aceitar trabalho" />
-        </form>
-      </div>
-      {% endif %}
-      {% elif request.user.id == job.user.id and user.role == 'employer' %}
-      <div class="col-6">
-        {% if job.status == '1' %}
-        <button class="btn btn-block btn-light btn-md" disabled>Buscando Profissional</button>
-        {% elif job.status == '2' %}
-        <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Em produção</a>
-        {% elif job.status == '3' %}
-        <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Aprovar</a>
-        {% elif job.status == '4' %}
-        <button class="btn btn-block btn-light btn-md" disabled>Aguarde a correção</button>
-        {% elif job.status == '5' %}
-        <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Efetue o pagamento</a>
-        {% elif job.status == '6' %}
-        <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Concluído</a>
-        {% elif job.status == '7' %}
-        <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Cancelado</a>
-        {% else %}
-        <a href="{% url 'jobapp:edit-job' job.id %}" class="btn btn-block btn-light btn-md">Editar</a>
-        {% endif %}
-      </div>
-      {% elif user.role is None %}
-      <div class="col-6">
-        <form action="{% url 'jobapp:apply-job' job.id %}" method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="job" value="{{ job.id }}">
-          <input type="submit" class="btn btn-block btn-primary btn-md" value="Aceitar trabalho" />
-        </form>
-      </div> 
-      {% endif %}
-    </div>
-
-  </div>
-</section>
-{% if page_obj %}
-
-<section class="site-section" id="next">
-  <div class="container">
-
-    <div class="row mb-5 justify-content-center">
-      <div class="col-md-7 text-center">
-        <h2 class="section-title mb-2">{{ total }} Vagas Relacionadas</h2>
       </div>
     </div>
 
-    <ul class="job-listings mb-5">
-      {% for job in page_obj %}
-      <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
-        <a href="{% url 'jobapp:single-job' job.id %}"></a>
-        <div class="job-listing-logo">
-          <img src="{% static 'images/kenai_logo.jpg' %}" width="100px" alt="Imagem" class="img-fluid">
+    {% if page_obj %}
+      <section class="site-section" id="next">
+        <div class="container">
+          <div class="row mb-5 justify-content-center">
+            <div class="col-md-7 text-center">
+              <h2 class="section-title mb-2">{{ total }} Vagas Relacionadas</h2>
+            </div>
+          </div>
+
+          <ul class="job-listings mb-5">
+            {% for related_job in page_obj %}
+              <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+                <a href="{% url 'jobapp:single-job' related_job.id %}"></a>
+                <div class="job-listing-logo">
+                  <img src="{% static 'images/kenai_logo.jpg' %}" width="100px" alt="Logo" class="img-fluid">
+                </div>
+                <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                  <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                    <h2>{{ related_job.title }}</h2>
+                    <strong>{{ related_job.company_name }}</strong>
+                  </div>
+                  <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                    <span class="icon-room"></span> {{ related_job.location }}
+                  </div>
+                  <div class="job-listing-meta">
+                    <span class="badge badge-danger">{{ related_job.get_job_type_display }}</span>
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+
+          {% if is_paginated %}
+            <div class="row pagination-wrap">
+              <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
+                <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+              </div>
+              <div class="col-md-6 text-center text-md-right">
+                <div class="custom-pagination ml-auto">
+                  {% if page_obj.has_previous %}
+                    <a href="?page=1">Primeira</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                  {% endif %}
+                  <span class="mx-3">...</span>
+                  {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                      <span class="current">{{ i }}</span>
+                    {% else %}
+                      <a href="?page={{ i }}">{{ i }}</a>
+                    {% endif %}
+                  {% endfor %}
+                  <span class="mx-3">...</span>
+                  {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
         </div>
-
-        <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
-          <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
-            <h2>{{ job.title }}</h2>
-            <strong>{{ job.company_name }}</strong>
-          </div>
-          <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
-            <span class="icon-room"></span> {{ job.location }}
-          </div>
-          <div class="job-listing-meta">
-            <span class="badge badge-danger">
-              {% if job.job_type == '1' %} Edição de vídeo
-              {% elif job.job_type == '2' %} Captação de imagem
-              {% elif job.job_type == '3' %} Design Gráfico
-              {% elif job.job_type == '4' %} Web Design
-              {% elif job.job_type == '5' %} Animação 2d/3d
-              {% elif job.job_type == '6' %} Motion Designer
-              {% elif job.job_type == '7' %} Produtor
-              {% elif job.job_type == '8' %} Roteirista
-              {% elif job.job_type == '9' %} Social Média
-              {% endif %}
-            </span>
-          </div>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-
-    {% include 'jobapp/paginator.html' %}
-
+      </section>
+    {% endif %}
   </div>
 </section>
-{% endif %}
-{% endblock content %}
-{% block extra_scripts %}
-<script src="{% static 'js/sweet-alert.js' %}"></script>
-<script src="{% static 'js/sweet-alert-ajax.js' %}"></script>
 {% endblock %}

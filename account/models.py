@@ -15,6 +15,7 @@ JOB_TYPE = (
 ROLE = (
     ('employer', "Employer"),
     ('employee', "Employee"),
+    ('kenai', 'Kenai'),
 )
 
 class User(AbstractUser):

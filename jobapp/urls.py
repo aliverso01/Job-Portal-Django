@@ -10,6 +10,7 @@ urlpatterns = [
     path('jobs/', views.job_list_View, name='job-list'),
     path('job/create/', views.create_job_View, name='create-job'),
     path('job/aprov/<int:id>/', views.aprovar_job_view, name='aprov-job'),
+    path('job/aprovado/<int:id>/', views.job_aprovado_view, name='job-aprovado'),
     path('job/aprovar/material/<int:id>/', views.aprovar_material_view, name='aprov-material'),
     path('job/<int:id>/', views.single_job_view, name='single-job'),
     path('apply-job/<int:id>/', views.apply_job_view, name='apply-job'),
@@ -26,7 +27,10 @@ urlpatterns = [
     path('dashboard/employee/delete-bookmark/<int:id>/', views.delete_bookmark_view, name='delete-bookmark'),
     #personalizados
     path('envia-material/<int:job_id>/', views.envia_material_view, name='envia-material'),
+    path('envia-material-edit/<int:job_id>/', views.envia_material_edit_view, name='envia-material-edit'),
 
+    #pagamento
 
+    path('billing/<int:job_id>/', views.pagina_pagamento_view, name='pagamento')
 ]
 

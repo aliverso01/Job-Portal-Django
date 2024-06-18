@@ -80,6 +80,7 @@ def job_list_View(request):
     return render(request, 'jobapp/job-list.html', context)
 
 
+
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def create_job_View(request):
@@ -87,28 +88,23 @@ def create_job_View(request):
     Provide the ability to create job post
     """
     form = JobForm(request.POST or None)
-
     user = get_object_or_404(User, id=request.user.id)
-    # categories = Category.objects.all()
 
     if request.method == 'POST':
-
         if form.is_valid():
-
             instance = form.save(commit=False)
             instance.user = user
             instance.save()
-            # for save tags
-            form.save_m2m()
+
+            # Criando automaticamente uma aprovação para este job
+            Aprovacao.objects.create(job=instance, user=request.user)
+
             messages.success(
                 request, 'Você publicou seu trabalho com sucesso! Por favor, aguarde a revisão.')
-            return redirect(reverse("jobapp:single-job", kwargs={
-                                    'id': instance.id
-                                    }))
+            return redirect(reverse("jobapp:single-job", kwargs={'id': instance.id}))
 
     context = {
         'form': form,
-        # 'categories': categories
     }
     return render(request, 'jobapp/post-job.html', context)
 
@@ -116,20 +112,16 @@ def create_job_View(request):
 @login_required(login_url=reverse_lazy('account:login'))
 def single_job_view(request, id):
     job = get_object_or_404(Job, id=id)
-    
-    # Verifica se existe uma aprovação para o usuário atual e o job específico
-    try:
-        aprovacao = Aprovacao.objects.get(job=job, user=request.user)
-    except Aprovacao.DoesNotExist:
-        aprovacao = None
 
-    form = JobForm(request.POST or None)
+    # Busca a primeira aprovação para o job
+    aprovacao = Aprovacao.objects.filter(job=job).first()
 
-    if cache.get(id):
-        job = cache.get(id)
-    else:
-        job = get_object_or_404(Job, id=id)
-        cache.set(id, job, 60 * 15)
+    # Não é necessário armazenar no cache novamente se já foi obtido com get_object_or_404
+    # if cache.get(id):
+    #     job = cache.get(id)
+    # else:
+    #     job = get_object_or_404(Job, id=id)
+    #     cache.set(id, job, 60 * 15)
 
     related_job_list = job.tags.similar_objects()
 
@@ -137,18 +129,21 @@ def single_job_view(request, id):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.save()
-        messages.success(request, 'Your Comment Was Successfully Posted!')
-        return HttpResponseRedirect(reverse("jobapp:single-job", kwargs={'id': id}))
+    form = JobForm(request.POST or None)
+
+    # Verificação de formulário não é necessária para a funcionalidade principal
+    # if form.is_valid():
+    #     instance = form.save(commit=False)
+    #     instance.save()
+    #     messages.success(request, 'Your Comment Was Successfully Posted!')
+    #     return HttpResponseRedirect(reverse("jobapp:single-job", kwargs={'id': id}))
 
     context = {
         'job': job,
-        'page_obj': page_obj,
+        'page_obj': page_obj,  # Passa page_obj para o template
         'total': len(related_job_list),
         'form': form,
-        'aprovacao': aprovacao,  # Passando aprovacao para o contexto
+        'aprovacao': aprovacao,
     }
 
     return render(request, 'jobapp/job-single.html', context)
@@ -399,19 +394,28 @@ def aprovar_job_view(request, id):
 
     form = JobEditForm(request.POST or None, instance=job)
 
-    if job:
-        try:
-            job.status = '4'
-            job.save()
-            messages.success(request, 'Aprovado com sucesso!')
-        except:
-            messages.success(request, 'Algo deu errado!')
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.status = '4'
+        instance.save()
 
-    context = {
-        'form': form,
-    }
+        job.status = '4'
+        job.save()
+        messages.success(request, 'Enviado para aprovação')
 
-    return redirect('jobapp:dashboard', context)
+    return redirect('jobapp:dashboard')
+
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employer
+def job_aprovado_view(request, id):
+    job = get_object_or_404(Job, id=id, user=request.user.id)
+
+    # Atualiza o status do job para '5' diretamente
+    job.status = '5'
+    job.save()
+
+    # Redireciona para a página de pagamento
+    return redirect('jobapp:pagamento', job_id=job.id)
 
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employee
@@ -471,27 +475,6 @@ def job_edit_view(request, id=id):
 
 #personalizados
 
-@login_required(login_url=reverse_lazy('account:login'))
-@user_is_employee
-def envia_material_view(request, id):
-    job = get_object_or_404(Job, id=id)
-
-    form = JobEditForm(request.POST or None, instance=job)
-
-    if job:
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.status = '3'
-            instance.save()
-            messages.success(request, 'Material enviado com sucesso!')
-        else:
-            messages.success(request, 'Algo deu errado!')
-
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'jobapp/envia-material.html', context)
 
 
 
@@ -499,9 +482,12 @@ def envia_material_view(request, id):
 @user_is_employee
 def envia_material_view(request, job_id):
     job = get_object_or_404(Job, id=job_id)
-    aprovacoes = get_object_or_404(Aprovacao, job=job, user=request.user)
-    print(aprovacoes)
+    aprovacoes = Aprovacao.objects.filter(job=job, user=request.user)
 
+    if aprovacoes.exists():  # Verifica se há pelo menos uma aprovação
+        aprovacao = aprovacoes.first()  # Pega a primeira aprovação encontrada
+    else:
+        aprovacao = None
 
     if request.method == 'POST':
         form = EnviaMaterialForm(request.POST, request.FILES)
@@ -515,7 +501,6 @@ def envia_material_view(request, job_id):
             job.status = '3'
             job.save()
 
-
             messages.success(request, 'Material enviado com sucesso!')
             return redirect('jobapp:dashboard')
     else:
@@ -524,6 +509,62 @@ def envia_material_view(request, job_id):
     context = {
         'form': form,
         'job': job,
-        'aprovacoes': aprovacoes,
+        'aprovacao': aprovacao,
     }
     return render(request, 'jobapp/envia-material.html', context)
+
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employee
+def envia_material_edit_view(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    aprovacoes = Aprovacao.objects.filter(job=job, user=request.user)
+
+    if aprovacoes.exists():  # Verifica se há pelo menos uma aprovação
+        aprovacao = aprovacoes.first()  # Pega a primeira aprovação encontrada
+    else:
+        raise Http404("Aprovação não encontrada para este usuário e job.")
+
+    if request.method == 'POST':
+        form = EnviaMaterialForm(request.POST, request.FILES, instance=aprovacao)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.job = job
+            instance.user = request.user
+            instance.status = '4'
+            instance.save()
+
+            job.status = '4'
+            job.save()
+
+            messages.success(request, 'Material atualizado com sucesso!')
+            return redirect('jobapp:dashboard')
+    else:
+        form = EnviaMaterialForm(instance=aprovacao)
+
+    context = {
+        'form': form,
+        'job': job,
+        'aprovacao': aprovacao,
+    }
+    return render(request, 'jobapp/envia-material.html', context)
+
+
+#pagina de checkout
+
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employer
+def pagina_pagamento_view(request, job_id):
+
+    job = get_object_or_404(Job, id=job_id)
+
+    form = JobForm(request.POST or None)
+
+
+    context = {
+        'job': job,
+        'form': form
+    }
+
+
+    return render(request, 'billing/billing.html', context)
+
