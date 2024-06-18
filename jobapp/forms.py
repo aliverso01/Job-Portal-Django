@@ -234,3 +234,11 @@ class EnviaMaterialForm(forms.ModelForm):
             "link"
             ]
 
+class AlteracaoForm(forms.ModelForm):
+
+    class Meta:
+        model = Job
+
+        fields = [
+            'alteracao'
+        ]

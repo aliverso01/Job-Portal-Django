@@ -530,10 +530,10 @@ def envia_material_edit_view(request, job_id):
             instance = form.save(commit=False)
             instance.job = job
             instance.user = request.user
-            instance.status = '4'
+            instance.status = '3'
             instance.save()
 
-            job.status = '4'
+            job.status = '3'
             job.save()
 
             messages.success(request, 'Material atualizado com sucesso!')
@@ -567,4 +567,26 @@ def pagina_pagamento_view(request, job_id):
 
 
     return render(request, 'billing/billing.html', context)
+
+
+
+def alteracao_view(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+
+    if request.method == 'POST':
+        form = AlteracaoForm(request.POST, instance=job)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.status = '4'  # Atualiza o status para 4
+            instance.save()
+            return redirect('jobapp:dashboard')  # Redireciona para a dashboard após a atualização
+    else:
+        form = AlteracaoForm(instance=job)
+
+    context = {
+        'form': form,
+        'job': job,
+    }
+
+    return render(request, 'jobapp/alteracao.html', context)
 

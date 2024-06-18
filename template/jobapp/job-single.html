@@ -57,6 +57,12 @@
           <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-align-left mr-3"></span>Descrição da Vaga</h3>
           {{ job.description | safe }}
         </div>
+        {% if job.status == '4' %}
+        <div class="col-lg-12 mb-4">
+          <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-align-left mr-3"></span>O Cliente solicitou alteração</h3>
+          {{ job.alteracao }}
+        </div>
+        {% endif %}
 
         {% if job.status == '3' %}
           {% if aprovacao %}
@@ -98,9 +104,18 @@
           {% if user.role == 'employer' and request.user.id == job.user.id %}
             {% if job.status == '1' %}
               <button onclick="call_sw_alert_func('{% url 'jobapp:delete' job.id %}','{{ job.id }}','Uma vez cancelada, você não poderá recuperar esta postagem!')" class="btn btn-block btn-danger btn-md">Cancelar</button>
-            {% elif job.status == '2' %}
-              <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Em produção</a>
-            {% elif job.status == '4' %}
+              {% elif job.status == '2' %}
+              <button class="btn btn-block btn-light btn-md" disabled>Em produção</button>
+              {% elif job.status == '3' %}
+              <div class="row">
+              <div class="col">
+                <a href="{% url 'jobapp:alteracao' job.id %}" class="btn btn-block btn-danger btn-md" >Solicitar correção</a>
+              </div>
+              <div class="col">
+              <a href="{% url 'jobapp:job-aprovado' job.id %}" class="btn btn-block btn-success btn-md" >Aprovar</a>
+            </div>
+          </div>
+              {% elif job.status == '4' %}
               <button class="btn btn-block btn-light btn-md" disabled>Aguarde a correção</button>
               {% elif job.status == '5' %}
               <button class="btn btn-block btn-light btn-md" >Pagar agora</button>
@@ -119,14 +134,11 @@
                 <input type="submit" class="btn btn-block btn-primary btn-md" value="Aceitar trabalho" />
               </form>
             {% elif job.status == '2' %}
-              <form action="{% url 'jobapp:aprov-material' job.id %}" method="POST">
-                {% csrf_token %}
-                <input type="submit" class="btn btn-block btn-light btn-md" value="Enviar Material" />
-              </form>
+              <a href="{% url 'jobapp:envia-material' job.id %}" class="btn btn-block btn-light btn-md">Enviar Material</a>
             {% elif job.status == '3' %}
               <span class="btn btn-block btn-light btn-md">Aguardando Cliente</span>
             {% elif job.status == '4' %}
-              <span class="btn btn-block btn-light btn-md">Enviar Alteração</span>
+              <a href="{% url 'jobapp:envia-material-edit' job.id %}" class="btn btn-block btn-light btn-md">Enviar Material Corrigido</a>
             {% elif job.status == '5' %}
               <span class="btn btn-block btn-light btn-md">Aguardando Pagamento</span>
             {% elif job.status == '6' %}

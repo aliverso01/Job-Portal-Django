@@ -28,6 +28,7 @@ urlpatterns = [
     #personalizados
     path('envia-material/<int:job_id>/', views.envia_material_view, name='envia-material'),
     path('envia-material-edit/<int:job_id>/', views.envia_material_edit_view, name='envia-material-edit'),
+    path('alteracao/<int:job_id>/', views.alteracao_view, name='alteracao'),
 
     #pagamento
 
