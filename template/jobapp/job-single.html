@@ -118,7 +118,7 @@
               {% elif job.status == '4' %}
               <button class="btn btn-block btn-light btn-md" disabled>Aguarde a correção</button>
               {% elif job.status == '5' %}
-              <button class="btn btn-block btn-light btn-md" >Pagar agora</button>
+              <a href="{% url 'jobapp:pagamento' job.id %}" class="btn btn-block btn-light btn-md">Pagar agora</a>
               {% elif job.status == '6' %}
               <a href="{% url 'jobapp:aprov-job' job.id %}" class="btn btn-block btn-light btn-md">Concluído</a>
             {% elif job.status == '7' %}

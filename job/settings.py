@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import django_heroku
+from dotenv import load_dotenv
+load_dotenv()
+
+EFIPAY_CLIENT_ID = os.getenv('EFIPAY_CLIENT_ID')
+EFIPAY_CLIENT_SECRET = os.getenv('EFIPAY_CLIENT_SECRET')
+EFIPAY_BASE_URL = os.getenv('EFIPAY_BASE_URL')
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -2,60 +2,58 @@
 {% load static %}
 
 {% block content %}
-
-    <section class="section-hero overlay inner-page bg-image" style="background-image: url({% static 'images/headbg.png' %});" id="home-section">
-      <div class="container">
+<section class="section-hero overlay inner-page bg-image" style="background-image: url({% static 'images/headbg.png' %});" id="home-section">
+    <div class="container">
         <div class="row">
-          <div class="col-md-7">
-            <h1 class="text-white font-weight-bold">Efetuar Pagamento</h1>
-            <div class="custom-breadcrumbs">
-              <a href="#">Início</a> <span class="mx-2 slash">/</span>
-              <a href="#">Projeto</a> <span class="mx-2 slash">/</span>
-              <span class="text-white"><strong>Efetuar pagamento</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    
-    <section class="site-section">
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                  <h1>Ficamos muito felizes em ter contribuído com este projeto.</h1><br>
-                  <h2>Valor a pagar: R$ {{ job.salary }},00</h2>
-                  <p>Segue abaixo os dados para pagamento via transferencia bancária ou Pix</p>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title">Dados Bancários</h2>
-                            <p class="card-text"><strong>Banco:</strong> Nome do Banco</p>
-                            <p class="card-text"><strong>Agência:</strong> 1234</p>
-                            <p class="card-text"><strong>Conta:</strong> 56789-0</p>
-                            <p class="card-text"><strong>CPF/CNPJ:</strong> 123.456.789-00</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 d-flex justify-content-center align-items-center">
-                    <div class="text-center">
-                        <h2>PIX</h2>
-                        <img src="https://via.placeholder.com/150" alt="QR Code PIX" class="img-fluid">
-                    </div>
-                </div>
-                <div class="col-md-12 text-center mt-4">
-                    Ao efetuar o pagamento via transferência ou pix, aguardar a confirmação do pagamento pela Equipe da Kenai.
+            <div class="col-md-7">
+                <h1 class="text-white font-weight-bold">Efetuar Pagamento</h1>
+                <div class="custom-breadcrumbs">
+                    <a href="{% url 'jobapp:home' %}">Início</a> <span class="mx-2 slash">/</span>
+                    <a href="{% url 'jobapp:single-job' job.id %}">Projeto</a> <span class="mx-2 slash">/</span>
+                    <span class="text-white"><strong>Efetuar pagamento</strong></span>
                 </div>
             </div>
-        </div>   
-
         </div>
-      </div>
-    </section>
+    </div>
+</section>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<section class="site-section">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1>Ficamos muito felizes em ter contribuído com este projeto.</h1><br>
+                <h2>Valor a pagar: R$ {{ job.salary }},00</h2>
+                <p>Segue abaixo os dados para pagamento via transferência bancária ou Pix</p>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Dados Bancários</h2>
+                        <p class="card-text"><strong>Banco:</strong> Nome do Banco</p>
+                        <p class="card-text"><strong>Agência:</strong> 1234</p>
+                        <p class="card-text"><strong>Conta:</strong> 56789-0</p>
+                        <p class="card-text"><strong>CPF/CNPJ:</strong> 123.456.789-00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <div class="text-center">
+                    <h2>PIX</h2>
+                    <img src="{% if pix_qr_code %}{{ pix_qr_code }}{% else %}https://via.placeholder.com/150{% endif %}" alt="QR Code PIX" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-12 text-center mt-4">
+                Ao efetuar o pagamento via transferência ou pix, aguardar a confirmação do pagamento pela Equipe da Kenai.
+            </div>
+        </div>
+    </div>
+    <form action="{% url 'jobapp:pagamento' job.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Efetuar Pagamento</button>
+    </form>
+</section>
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock %}

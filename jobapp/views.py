@@ -9,6 +9,9 @@ from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.core.serializers import serialize
 from django.views.decorators.cache import cache_page
 from django.core.cache import cache
+import requests
+from django.conf import settings
+from .utils import get_efipay_token, create_split_payment
 
 from account.models import User
 from jobapp.forms import *
@@ -554,19 +557,53 @@ def envia_material_edit_view(request, job_id):
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def pagina_pagamento_view(request, job_id):
-
     job = get_object_or_404(Job, id=job_id)
 
-    form = JobForm(request.POST or None)
+    pix_qr_code = None  # Placeholder para o QR code Pix
 
+    if request.method == 'POST':
+        form = JobForm(request.POST)
+        if form.is_valid():
+            amount = int(job.salary * 100)  # Convertendo o valor para centavos
+            recipient_list = [
+                {
+                    "chave": "chave_pix_recebedor_1",
+                    "valor": int(amount * 0.5)  # Exemplo: 50% do valor total
+                },
+                {
+                    "chave": "chave_pix_recebedor_2",
+                    "valor": int(amount * 0.5)  # Exemplo: 50% do valor total
+                }
+            ]
+
+            payment_response = create_split_payment(amount, recipient_list)
+            
+            if 'erro' in payment_response:
+                # Lidar com erro
+                context = {
+                    'job': job,
+                    'form': form,
+                    'error': payment_response['erro']
+                }
+                return render(request, 'billing/billing.html', context)
+
+            # Gerar QR code Pix e redirecionar para a página de confirmação ou sucesso
+            pix_qr_code = payment_response.get('qr_code_url')
+            return redirect(reverse('jobapp:pagina_de_sucesso'))
+
+    else:
+        form = JobForm()
 
     context = {
         'job': job,
-        'form': form
+        'form': form,
+        'pix_qr_code': pix_qr_code,
     }
 
-
     return render(request, 'billing/billing.html', context)
+
+def pagina_sucesso_view(request):
+    return render(request, 'billing/success.html')
 
 
 
@@ -589,4 +626,3 @@ def alteracao_view(request, job_id):
     }
 
     return render(request, 'jobapp/alteracao.html', context)
-

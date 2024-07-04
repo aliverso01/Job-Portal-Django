@@ -31,7 +31,7 @@ urlpatterns = [
     path('alteracao/<int:job_id>/', views.alteracao_view, name='alteracao'),
 
     #pagamento
-
-    path('billing/<int:job_id>/', views.pagina_pagamento_view, name='pagamento')
+    path('billing/<int:job_id>/', views.pagina_pagamento_view, name='pagamento'),
+    path('pagamento/sucesso/', views.pagina_sucesso_view, name='pagina_de_sucesso'),
 ]
 
